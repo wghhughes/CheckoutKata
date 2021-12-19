@@ -13,6 +13,12 @@ namespace CheckoutService.Tests
             { 'D', 55 }
         };
 
+        private readonly Dictionary<string, decimal> _discounts = new()
+        {
+            { "BBB", 40 },
+            { "DD", 82.5m }
+        };
+
         [Theory]
         [InlineData("A", 10)]
         [InlineData("B", 15)]
@@ -20,7 +26,7 @@ namespace CheckoutService.Tests
         [InlineData("D", 55)]
         public void AddToBasket_AddSingleItem_AddsItemAmount(string input, int expected)
         {
-            var checkoutService = new CheckoutService(_catalogue);
+            var checkoutService = new CheckoutService(_catalogue, _discounts);
 
             checkoutService.AddToBasket(input);
 
@@ -30,7 +36,7 @@ namespace CheckoutService.Tests
         [Fact]
         public void AddToBasket_AddOneOfEachItem_CalculatesAggregateTotal()
         {
-            var checkoutService = new CheckoutService(_catalogue);
+            var checkoutService = new CheckoutService(_catalogue, _discounts);
 
             checkoutService.AddToBasket("ABCD");
 
@@ -41,7 +47,7 @@ namespace CheckoutService.Tests
         [Fact]
         public void AddToBasket_AddThreeOfItemB_AppliesDiscount()
         {
-            var checkoutService = new CheckoutService(_catalogue);
+            var checkoutService = new CheckoutService(_catalogue, _discounts);
 
             checkoutService.AddToBasket("BBB");
 
@@ -52,11 +58,11 @@ namespace CheckoutService.Tests
         [Fact]
         public void AddToBasket_AddTwoOfItemD_AppliesDiscount()
         {
-            var checkoutService = new CheckoutService(_catalogue);
+            var checkoutService = new CheckoutService(_catalogue, _discounts);
 
             checkoutService.AddToBasket("DD");
 
-            Assert.Equal(82.5, checkoutService.GetTotal());
+            Assert.Equal(82.5m, checkoutService.GetTotal());
         }
     }
 }
