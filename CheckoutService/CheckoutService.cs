@@ -15,11 +15,14 @@ namespace CheckoutService
             _discounts = discounts;
         }
 
+        public List<char> GetBasketItems()
+        {
+            return _basket;
+        }
+
         public void AddToBasket(string items)
         {
             _basket.AddRange(items);
-
-            _basket.Sort();
         }
 
         // Modulo discounting has not been used in case of discounts involving multiple items (e.g. AB)

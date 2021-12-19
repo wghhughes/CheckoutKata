@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace CheckoutService.Tests
@@ -18,6 +19,19 @@ namespace CheckoutService.Tests
             { "BBB", 40 },
             { "DD", 82.5m }
         };
+
+        [Theory]
+        [InlineData("A", "A")]
+        [InlineData("BAC", "BAC")]
+        [InlineData("CCDB", "CCDB")]
+        public void AddToBasket_AddItems_AddsItemsToBasket(string input, string expected)
+        {
+            var checkoutService = new CheckoutService(_catalogue, _discounts);
+
+            checkoutService.AddToBasket(input);
+
+            Assert.Equal(expected.ToCharArray(), checkoutService.GetBasketItems());
+        }
 
         [Theory]
         [InlineData("A", 10)]
@@ -75,6 +89,22 @@ namespace CheckoutService.Tests
             checkoutService.AddToBasket(input);
 
             Assert.Equal(expected, checkoutService.GetTotal());
+        }
+
+        [Fact]
+        public void GetTotal_EmptyBasket_ReturnsZeroTotal()
+        {
+            var checkoutService = new CheckoutService(_catalogue, _discounts);
+
+            Assert.Equal(0, checkoutService.GetTotal());
+        }
+
+        [Fact]
+        public void GetBasketItems_EmptyBasket_ReturnsNoItems()
+        {
+            var checkoutService = new CheckoutService(_catalogue, _discounts);
+
+            Assert.True(!checkoutService.GetBasketItems().Any());
         }
     }
 }
