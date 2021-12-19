@@ -24,7 +24,7 @@ namespace CheckoutService.Tests
         [InlineData("B", 15)]
         [InlineData("C", 40)]
         [InlineData("D", 55)]
-        public void AddToBasket_AddSingleItem_AddsItemAmount(string input, int expected)
+        public void AddToBasket_AddSingleItem_AddsItemAmount(string input, decimal expected)
         {
             var checkoutService = new CheckoutService(_catalogue, _discounts);
 
@@ -63,6 +63,18 @@ namespace CheckoutService.Tests
             checkoutService.AddToBasket("DD");
 
             Assert.Equal(82.5m, checkoutService.GetTotal());
+        }
+
+        [Theory]
+        [InlineData("AABBBBBBBCDDD", 292.5)]
+        [InlineData("DDBACCDDD", 325)]
+        public void AddToBasket_AddVariousItems_AppliesAppropriateDiscounts(string input, decimal expected)
+        {
+            var checkoutService = new CheckoutService(_catalogue, _discounts);
+
+            checkoutService.AddToBasket(input);
+
+            Assert.Equal(expected, checkoutService.GetTotal());
         }
     }
 }
